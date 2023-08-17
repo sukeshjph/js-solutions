@@ -1,13 +1,39 @@
+const data = require("../data.js");
+
 module.exports = async function (context, req) {
-    context.log('JavaScript HTTP trigger function processed a request.');
 
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+    try {
+        context.log('JavaScript HTTP trigger function processed a request.');
 
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
-    };
-}
+        const param1 = req.query?.param1 || null;
+        const param2 = req.query?.param2 || null;
+        const param3 = req.query?.param3 || null;
+
+        if (!param1 || !param2 || !param3) {
+            context.res = {
+                status: 200,
+                body: "Parameters missing",
+            };
+
+        }
+
+        else {
+            const filteredData = data[param1][param2][param3];
+            context.res = {
+                status: 200,
+                body: filteredData,
+            };
+        }
+    } catch (error) {
+        context.log(`Server Error: ${error}`);
+        context.res = {
+            status: 500,
+            body: `Server Error: ${error}`
+        }
+
+    }
+
+
+
+
+};
